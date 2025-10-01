@@ -1,0 +1,5 @@
+services:
+  web:
+    image: arthaudproust1/memory
+    ports:
+      - 80:80
