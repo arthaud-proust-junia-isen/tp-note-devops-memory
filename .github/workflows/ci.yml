@@ -10,3 +10,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: check invalid jpeg files
         run: file --mime-type ./html/**/*.jpg | grep -v image/jpeg && exit 1 || exit 0
+
+  build-memory-2026:
+    needs: test-memory-2026
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: build image
+        run: docker build . -t arthaudproust1/memory
