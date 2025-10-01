@@ -36,6 +36,15 @@ jobs:
     needs: push-memory-2026
     runs-on: self-hosted
     steps:
+      - name: Copy docker-compose.yml via SSH
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yml"
+          target: ${{ secrets.DOCKER_COMPOSE_CONFIG_PATH }}
       - name: Log in to server with ssh
         uses: appleboy/ssh-action@v1
         with:
@@ -44,5 +53,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            /usr/local/bin/docker image pull arthaudproust1/memory
-            /usr/local/bin/docker run -d -p 80:80 arthaudproust1/memory
+            /usr/local/bin/docker compose -f ${{ secrets.DOCKER_COMPOSE_CONFIG_PATH }}/docker-compose.yml up -d
