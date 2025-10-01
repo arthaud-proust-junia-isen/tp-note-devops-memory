@@ -31,3 +31,18 @@ jobs:
 
       - name: Push onto Docker Hub
         run: docker image push arthaudproust1/memory
+
+  deploy-memory-2026:
+    needs: push-memory-2026
+    runs-on: self-hosted
+    steps:
+      - name: Log in to server with ssh
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            /usr/local/bin/docker image pull arthaudproust1/memory
+            /usr/local/bin/docker run -d -p 80:80 arthaudproust1/memory
